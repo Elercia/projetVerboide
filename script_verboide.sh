@@ -1,10 +1,12 @@
 #!/bin/bash
 if [ "$#" -eq 1 ]; then
 	filenameComplete=$1
+	encoding=$( file $filenameComplete --mime-encoding -b | cat)
+	
 	filename="${filenameComplete%.*}"
 	fileToSave=$filename"_Occurences.txt"
 	#on converti en utf-8
-	iconv -f 8859_1 $filenameComplete |
+	iconv -f $encoding $filenameComplete |
 	#On enleve tous les caractères si dessous
 	sed "s/[0-9.,:\#\;\!\(\)*\?\"\]//g" |
 	sed "s/\[//g" | 
