@@ -3,8 +3,10 @@ if [ "$#" -eq 1 ]; then
 	filenameComplete=$1
 	filename="${filenameComplete%.*}"
 	fileToSave=$filename"_Occurences.txt"
+	#on converti en utf-8
+	iconv -f 8859_1 $filenameComplete |
 	#On enleve tous les caractères si dessous
-	sed "s/[0-9.,:\#\;\!\(\)*\?\"\»]//g" $filenameComplete |
+	sed "s/[0-9.,:\#\;\!\(\)*\?\"\»]//g" |
 	sed "s/\[//g" | 
 	sed "s/\]//g" |
 	#remplace les espaces par les retour à la ligne 
