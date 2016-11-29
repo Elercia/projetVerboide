@@ -8,13 +8,11 @@ if [ "$#" -eq 1 ]; then
 	#on converti en utf-8
 	iconv -f $encoding $filenameComplete |
 	#On enleve tous les caractères si dessous
-	sed "s/[0-9.,:\#\;\!\(\)*\?\"\]//g" |
-	sed "s/\[//g" | 
-	sed "s/\]//g" |
 	sed "s/\«//g" |
 	sed "s/\»//g" |
-	sed "s/\-//g" |
-	sed "s/\&//g" |
+	sed "s/\°//g" |
+	tr -d [:punct:] |
+	tr -d [:digit:] |
 	#remplace les espaces par les retour à la ligne 
 	tr " " "\012" | 
 	#mets le mots en minuscule
