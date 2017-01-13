@@ -15,6 +15,7 @@ if [ "$#" -eq 1 ]; then
 	tr '[:digit:]' ' '|
 	#remplace les espaces par les retour à la ligne 
 	tr " " "\012" | 
+	tr "\t" " " |
 	#mets le mots en minuscule
 	tr '[:upper:]' '[:lower:]' |
 	#on enleve les stop word fr et en (au cas ou) 
