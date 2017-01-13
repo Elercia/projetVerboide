@@ -18,8 +18,8 @@ if [ "$#" -eq 1 ]; then
 	#mets le mots en minuscule
 	tr '[:upper:]' '[:lower:]' |
 	#on enleve les stop word fr et en (au cas ou) 
-	grep -v -w -f stopwords_fr.txt | 
-	grep -v -w -f stopwords_en.txt | 
+	fgrep -v -w -f stopwords_fr.txt |
+	fgrep -v -w -f stopwords_en.txt |
 	#on tri (ché po)
 	sort | 
 	#enleve les lignes vides
