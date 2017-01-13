@@ -19,12 +19,14 @@ if [ "$#" -eq 1 ]; then
 	#mets le mots en minuscule
 	tr '[:upper:]' '[:lower:]' |
 	#on enleve les stop word fr et en (au cas ou) 
-	fgrep -v -w -f stopwords_fr.txt |
-	fgrep -v -w -f stopwords_en.txt |
+	fgrep -v -w -f Stopwords/stopwords_fr.txt |
+	fgrep -v -w -f Stopwords/stopwords_en.txt |
 	#on tri (ché po)
-	sort | 
+	sort |
 	#enleve les lignes vides
 	sed '/^$/d' |
+	#enleve les mots de 1 lettre
+	sed '/^.$/d' |
 	#compte les mots
 	uniq -c |
 	#on tri par nb d'occurence et on save
