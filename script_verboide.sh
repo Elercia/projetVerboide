@@ -33,12 +33,13 @@ if [ "$#" -eq 1 ]; then
 	sed '/^.$/d' > tmp
 
 	content=$(tr '[:space:]' '\n' < tmp)
-	tr '[:space:]' '\n' < tmp > fileContent
+	tr '[:space:]' '\n' < tmp > fileContent.txt
 
 	#on cherche le nombre d'occurence le plus elevé
 	langueArray=("fr" "en" "es" "de" "it" "ru")
 	langueReconnue=""
-	occurenceMax=-1
+	occurenceMax=0
+	currentOccu=-1
 	for i in "${langueArray[@]}"
 	do
 		#comparer avec Samples/sample$i.txt
@@ -46,31 +47,29 @@ if [ "$#" -eq 1 ]; then
 		#si plus grand que ancien plus grand remplacer
 		#ramplacer la var de langue
 		#afficher
-		fileToRead=$(cat "Samples/sample_$i.txt")
-		currentOccu=comm -12 fileContent $fileToRead | wc -l
-		echo $currentOccu
-		if [ currentOccu > occurenceMax ]
+		fileToRead="Samples/sample_$i.txt"
+		
+		currentOccu=`grep -Fxf ./fileContent.txt $fileToRead | wc -l` 
+		
+		if [ $currentOccu -gt $occurenceMax ]
 		then
-		        occurenceMax=currentOccu
-		        langueReconnue=$i
+			occurenceMax=$currentOccu
+			langueReconnue=$i
 		fi
 	done
+
 	echo "La langue reconnue est : $langueReconnue"
 
 
-
-
-
 	#compte les mots
-	#uniq -c |
+	uniq -c < fileContent.txt |
 	#on tri par nb d'occurence et on save
-	#sort -nb -r > $fileToSave
+	sort -nb -r
 	
-	# echo comm Samples/sample_fr fileContent
+	
 	#On suppime les ficier temporaire que l'on a utilisé
 	rm tmp
-	rm fileContent
-	echo "Sauvegardé sous le nom $fileToSave"
+	rm fileContent.txt
 else
 	echo "Usage ./script_verboide.sh <file_to_check>"
 fi
