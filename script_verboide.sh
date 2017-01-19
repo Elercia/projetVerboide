@@ -2,6 +2,7 @@
 if [ "$#" -eq 1 ]; then
 	filenameComplete=$1
 	encoding=$( file $filenameComplete --mime-encoding -b | cat)
+	langueArray=("fr" "en" "es" "de" "it" "ru")
 	
 	filename="${filenameComplete%.*}"
 	fileToSave=$filename"_Occurences.txt"
@@ -17,33 +18,35 @@ if [ "$#" -eq 1 ]; then
 	tr " " "\012" | 
 	tr "\t" " " |
 	#mets le mots en minuscule
-	tr '[:upper:]' '[:lower:]' |
-	#on enleve les stop word fr et en (au cas ou) 
-	fgrep -v -w -f Stopwords/stopwords_fr.txt |
-	fgrep -v -w -f Stopwords/stopwords_en.txt |
-	fgrep -v -w -f Stopwords/stopwords_es.txt |
-	fgrep -v -w -f Stopwords/stopwords_de.txt |
-	fgrep -v -w -f Stopwords/stopwords_it.txt |
-	fgrep -v -w -f Stopwords/stopwords_ru.txt |
+	tr '[:upper:]' '[:lower:]' > tmp
+
+	contentBeforeSample=`cat tmp`
+	for i in "${langueArray[@]}"
+	do
+		#on enleve les stop word fr et en (au cas ou) 
+		samplefilePath="Stopwords/stopwords_$i.txt"
+		echo "$contentBeforeSample" > tmp2
+		temp=$(fgrep -v -w -f $samplefilePath < tmp2)
+		contentBeforeSample=$temp
+	done
 	#on tri (ché po)
-	sort |
+	echo "$contentBeforeSample" > tmp2
+	sort tmp2 |
 	#enleve les lignes vides
 	sed '/^$/d' |
 	#enleve les mots de 1 lettre
-	sed '/^.$/d' > tmp
-
-	content=$(tr '[:space:]' '\n' < tmp)
-	tr '[:space:]' '\n' < tmp > fileContent.txt
+	sed '/^.$/d' |
+	tr '[:space:]' '\n' > fileContent.txt
 
 	#on cherche le nombre d'occurence le plus elevé
-	langueArray=("fr" "en" "es" "de" "it" "ru")
+	
 	langueReconnue=""
 	occurenceMax=0
 	currentOccu=-1
 	for i in "${langueArray[@]}"
 	do
 		#comparer avec Samples/sample$i.txt
-		#recup result de comm
+		#recup result de grep
 		#si plus grand que ancien plus grand remplacer
 		#ramplacer la var de langue
 		#afficher
@@ -59,16 +62,20 @@ if [ "$#" -eq 1 ]; then
 	done
 
 	echo "La langue reconnue est : $langueReconnue"
-
-
+	
 	#compte les mots
 	uniq -c < fileContent.txt |
 	#on tri par nb d'occurence et on save
-	sort -nb -r
+	sort -nb -r > tmp
+	lines=$(head -n 7 tmp)
+	lines=${lines//[[:digit:]]/}
+	lines=${lines//[$'\t\r ']/}
+	lines=${lines//[$'\n']/, } 
+	echo "Les mots les plus utilisé du texte sont : $lines" 
 	
-	
-	#On suppime les ficier temporaire que l'on a utilisé
+	# #On suppime les ficier temporaire que l'on a utilisé
 	rm tmp
+	rm tmp2
 	rm fileContent.txt
 else
 	echo "Usage ./script_verboide.sh <file_to_check>"
