@@ -18,16 +18,16 @@ if [ "$#" -eq 1 ]; then
 	#on met les mots en minuscule
 	tr '[:upper:]' '[:lower:]' > tmp
 
-	contentBeforeSample=$(cat tmp)
+	contentBeforeStopwords=$(cat tmp)
 	for i in "${langueArray[@]}"
 	do
-		samplefilePath="Stopwords/stopwords_$i.txt"
-		echo "$contentBeforeSample" > tmp2
-		temp=$(grep -Fvxf $samplefilePath tmp2)
-		contentBeforeSample=$temp
+		stopwordsfilePath="Stopwords/stopwords_$i.txt"
+		echo "$contentBeforeStopwords" > tmp2
+		temp=$(grep -Fvxf $stopwordsfilePath tmp2)
+		contentBeforeStopwords=$temp
 	done
 	#on trie
-	echo "$contentBeforeSample" > tmp2
+	echo "$contentBeforeStopwords" > tmp2
 	sort tmp2 |
 	#enleve les lignes vides
 	sed '/^$/d' |
