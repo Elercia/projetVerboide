@@ -2,7 +2,7 @@
 if [ "$#" -eq 1 ]; then
 	filenameComplete=$1
 	encoding=$( file $filenameComplete --mime-encoding -b | cat)
-	langueArray=("fr" "en" "es" "de" "it" "ru")
+	langueArray=( "en" "es" "de" "it" "ru" "fr")
 	
 	#on convertit en utf-8
 	iconv -f $encoding $filenameComplete |
@@ -18,12 +18,12 @@ if [ "$#" -eq 1 ]; then
 	#on met les mots en minuscule
 	tr '[:upper:]' '[:lower:]' > tmp
 
-	contentBeforeSample=`cat tmp`
+	contentBeforeSample=$(cat tmp)
 	for i in "${langueArray[@]}"
 	do
 		samplefilePath="Stopwords/stopwords_$i.txt"
 		echo "$contentBeforeSample" > tmp2
-		temp=$(fgrep -v -w -f $samplefilePath < tmp2)
+		temp=$(grep -Fvxf $samplefilePath tmp2)
 		contentBeforeSample=$temp
 	done
 	#on trie
@@ -34,7 +34,7 @@ if [ "$#" -eq 1 ]; then
 	#enleve les mots de 1 lettre
 	sed '/^.$/d' |
 	tr '[:space:]' '\n' > fileContent.txt
-
+	
 	#on cherche le nombre d'occurences le plus elevé
 	
 	langueReconnue=""

@@ -66,7 +66,7 @@ cioe
 cioÃ¨
 circa
 citta
-cittÃ 
+cittÃ
 codesta
 codesti
 codesto
@@ -116,7 +116,7 @@ dirimpetto
 dopo
 dove
 dovra
-dovrÃ 
+dovrÃ
 due
 dunque
 durante
@@ -148,7 +148,7 @@ forse
 fra
 fuori
 gia
-giÃ 
+giÃ
 giacche
 giorni
 giorno
@@ -179,7 +179,7 @@ invece
 io
 l
 la
-lÃ 
+lÃ
 lavoro
 le
 lei
@@ -315,7 +315,7 @@ quindi
 riecco
 salvo
 sara
-sarÃ 
+sarÃ
 sarebbe
 scopo
 scorso
