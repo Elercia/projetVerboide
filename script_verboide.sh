@@ -4,32 +4,29 @@ if [ "$#" -eq 1 ]; then
 	encoding=$( file $filenameComplete --mime-encoding -b | cat)
 	langueArray=("fr" "en" "es" "de" "it" "ru")
 	
-	filename="${filenameComplete%.*}"
-	fileToSave=$filename"_Occurences.txt"
-	#on converti en utf-8
+	#on convertit en utf-8
 	iconv -f $encoding $filenameComplete |
-	#On enleve tous les caractères si dessous
+	#on enleve tous les caractères ci-dessous
 	sed "s/\«/ /g" |
 	sed "s/\»/ /g" |
 	sed "s/\°/ /g" |
 	tr '[:punct:]' ' ' |
 	tr '[:digit:]' ' '|
-	#remplace les espaces par les retour à la ligne 
+	#on remplace les espaces par les retours à la ligne 
 	tr " " "\012" | 
 	tr "\t" " " |
-	#mets le mots en minuscule
+	#on met les mots en minuscule
 	tr '[:upper:]' '[:lower:]' > tmp
 
 	contentBeforeSample=`cat tmp`
 	for i in "${langueArray[@]}"
 	do
-		#on enleve les stop word fr et en (au cas ou) 
 		samplefilePath="Stopwords/stopwords_$i.txt"
 		echo "$contentBeforeSample" > tmp2
 		temp=$(fgrep -v -w -f $samplefilePath < tmp2)
 		contentBeforeSample=$temp
 	done
-	#on tri (ché po)
+	#on trie
 	echo "$contentBeforeSample" > tmp2
 	sort tmp2 |
 	#enleve les lignes vides
@@ -38,7 +35,7 @@ if [ "$#" -eq 1 ]; then
 	sed '/^.$/d' |
 	tr '[:space:]' '\n' > fileContent.txt
 
-	#on cherche le nombre d'occurence le plus elevé
+	#on cherche le nombre d'occurences le plus elevé
 	
 	langueReconnue=""
 	occurenceMax=0
@@ -46,10 +43,9 @@ if [ "$#" -eq 1 ]; then
 	for i in "${langueArray[@]}"
 	do
 		#comparer avec Samples/sample$i.txt
-		#recup result de grep
-		#si plus grand que ancien plus grand remplacer
-		#ramplacer la var de langue
-		#afficher
+		#on recupere le resultat de grep (nombre d'occurences)
+		#si le resultat est plus grand que l'ancien alors 
+		#on le remplace et on met à jour la variable de langue
 		fileToRead="Samples/sample_$i.txt"
 		
 		currentOccu=`grep -Fxf ./fileContent.txt $fileToRead | wc -l` 
@@ -61,11 +57,12 @@ if [ "$#" -eq 1 ]; then
 		fi
 	done
 
+	#on affiche la langue reconnue
 	echo "La langue reconnue est : $langueReconnue"
 	
-	#compte les mots
+	#on compte les mots
 	uniq -c < fileContent.txt |
-	#on tri par nb d'occurence et on save
+	#on trie par nombre d'occurences puis l'affiche
 	sort -nb -r > tmp
 	lines=$(head -n 7 tmp)
 	lines=${lines//[[:digit:]]/}
@@ -73,7 +70,7 @@ if [ "$#" -eq 1 ]; then
 	lines=${lines//[$'\n']/, } 
 	echo "Les mots les plus utilisé du texte sont : $lines" 
 	
-	# #On suppime les ficier temporaire que l'on a utilisé
+	#On supprime les fichiers temporaires que l'on a utilisé
 	rm tmp
 	rm tmp2
 	rm fileContent.txt
